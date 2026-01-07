@@ -1,5 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import LoginForm from '.';
+import * as EmailValidator from 'email-validator';
 
 test('renders sign in page', () => {
   render(<LoginForm />);

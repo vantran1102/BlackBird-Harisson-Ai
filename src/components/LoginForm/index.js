@@ -8,17 +8,48 @@ import Grid from '@mui/material/Grid';
 import Snackbar from '@mui/material/Snackbar';
 import Typography from '@mui/material/Typography';
 import logo from '../../assets/logo.svg';
+import * as EmailValidator from 'email-validator';
 
 
 export default function LoginForm() {
   const [showAlert, setShowAlert] = useState(false);
+  const [emailError, setEmailError] = useState("")
+  const [passwordError, setPasswordError] = useState("")
+  const validatePassword = (password) => {
+    if (!password || password.length < 8) return "Password must be at least 8 characters";
+    if (!/[a-z]/.test(password)) return "Password must include at least 1 lowercase letter";
+    if (!/[A-Z]/.test(password)) return "Password must include at least 1 uppercase letter";
+    if (!/[0-9]/.test(password)) return "Password must include at least 1 number (0-9).";
+    if (!/[!@#$%^&*(),.?":{}|<>_\-\\[\]\/~`+=;]/.test(password))
+      return "Password must include at least 1 special character.";
+    return "";
+  }
   const validateForm = (event) => {
     event.preventDefault()
     const data = new FormData(event.currentTarget);
     const email = data.get('email');
     const password = data.get('password');
+    let isValid = true;
+    // Email Validation
+    if (!email){
+      setEmailError("Email is require")
+      isValid = false;
+    }else if (!EmailValidator.validate(email)){
+      setEmailError("Please enter valid email address");
+      isValid = false;
+    }else{
+      setEmailError("")
+    }
+    // Password Validation
+    const psswrd = validatePassword(password)
+    if(psswrd){
+      setPasswordError(psswrd);
+      isValid = false;
+    }else{
+      setPasswordError("")
+    }
+    return isValid;
 
-    // Add validation code here
 
   }
 
@@ -29,8 +60,10 @@ export default function LoginForm() {
       email: data.get('email'),
       password: data.get('password'),
     });
-    validateForm(event);
-    setShowAlert("Login Successful");
+    const ok = validateForm(event)
+    if (ok) setShowAlert("Login Successful");
+    else setShowAlert(false)
+    
   };
 
   return (
@@ -87,6 +120,8 @@ export default function LoginForm() {
               name="email"
               autoComplete="email"
               autoFocus
+              error={Boolean(emailError)}
+              helperText={emailError}
             />
             <TextField
               margin="normal"
@@ -97,6 +132,8 @@ export default function LoginForm() {
               type="password"
               id="password"
               autoComplete="current-password"
+              error={Boolean(passwordError)}
+              helperText={passwordError}
             />
             <Button
               type="submit"
