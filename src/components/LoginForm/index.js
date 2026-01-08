@@ -17,8 +17,8 @@ export default function LoginForm() {
   const [passwordError, setPasswordError] = useState("")
   const validatePassword = (password) => {
     if (!password || password.length < 8) return "Password must be at least 8 characters";
-    if (!/[a-z]/.test(password)) return "Password must include at least 1 lowercase letter";
     if (!/[A-Z]/.test(password)) return "Password must include at least 1 uppercase letter";
+    if (!/[a-z]/.test(password)) return "Password must include at least 1 lowercase letter";
     if (!/[0-9]/.test(password)) return "Password must include at least 1 number (0-9).";
     if (!/[!@#$%^&*(),.?":{}|<>_\-\\[\]\/~`+=;]/.test(password))
       return "Password must include at least 1 special character.";
